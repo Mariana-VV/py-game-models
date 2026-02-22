@@ -46,7 +46,7 @@ def main() -> None:  # noqa: C901
     for players in data_dict.values():
         for skills_key, skills_value in players.items():
             if skills_key == "race":
-                race_name = skills_value["name"]
+                race_name = skills_value.get("name")
                 race_id = Race.objects.get(name=race_name).id
                 for key, value in skills_value.items():
                     if key == "skills" and value is not None:
@@ -61,11 +61,12 @@ def main() -> None:  # noqa: C901
                                     skills_array.append(skills_dict)
 
     for skill in skills_array:
-        Skill.objects.get_or_create(
-            name=skill["name"],
-            bonus=skill["bonus"],
-            race_id=skill["race_id"]
-        )
+        if skill is not None:
+            Skill.objects.get_or_create(
+                name=skill.get("name"),
+                bonus=skill.get("bonus"),
+                race_id=skill.get("race_id")
+            )
 
     for player_key, player_value in data_dict.items():
         nickname = player_key
