@@ -15,8 +15,9 @@ def main() -> None:
         for race_key, race_value in players_races.items():
             race_dict = {}
             if race_key == "race":
-                race_dict["name"] = race_value["name"]
-                race_dict["description"] = race_value["description"]
+                race_dict["name"] = race_value.get("name")
+                race_dict["description"] = (
+                    race_value.get("description"))
                 if race_dict not in race_array:
                     race_array.append(race_dict)
 
@@ -30,8 +31,9 @@ def main() -> None:
         for key, value in players.items():
             if key == "guild" and value is not None:
                 guild_dict = {}
-                guild_dict["name"] = value["name"]
-                guild_dict["description"] = value["description"]
+                guild_dict["name"] = value.get("name")
+                guild_dict["description"] = (
+                    value.get("description"))
                 if guild_dict not in guild_array:
                     guild_array.append(guild_dict)
 
@@ -51,10 +53,11 @@ def main() -> None:
                         for skill in value:
                             if value is not None:
                                 skills_dict = {}
-                                skills_dict["name"] = skill["name"]
-                                skills_dict["bonus"] = skill["bonus"]
+                                skills_dict["name"] = skill.get("name")
+                                skills_dict["bonus"] = skill.get("bonus")
                                 skills_dict["race_id"] = int(race_id)
-                                if skills_dict not in skills_array and skills_dict is not None:
+                                if (skills_dict not in skills_array and
+                                        skills_dict is not None):
                                     skills_array.append(skills_dict)
 
     for skill in skills_array:
@@ -68,25 +71,26 @@ def main() -> None:
         nickname = player_key
         email = player_value.get("email")
         bio = player_value.get("bio")
-        race_data = player_value.get("race")
-        guild_obj = player_value.get("guild")
-        if (race_data is not None and isinstance(race_data, dict) and isinstance(guild_obj, dict) and
-                guild_obj is not None):
-            Player.objects.get_or_create(
-                nickname=nickname,
-                email=email,
-                bio=bio,
-                race=Race.objects.get(name=player_value.get("race").get("name")),
-                guild=Guild.objects.get(name=player_value.get("guild").get("name"))
-            )
+        race = player_value.get("race")
+        guild = player_value.get("guild")
+        guild_to_create = None
+        if player_value.get("race") is not None:
+            name = race.get("name")
+            race_to_create = Race.objects.get(name=name)
         else:
-            Player.objects.get_or_create(
-                nickname=nickname,
-                email=email,
-                bio=bio,
-                race=Race.objects.get(name=player_value.get("race").get("name")),
-                guild=None
-            )
+            race_to_create = None
+        if player_value.get("guild") is not None:
+            name = guild.get("name")
+            guild_to_create = Guild.objects.get(name=name)
+        else:
+            guild_to_create = None
+        Player.objects.get_or_create(
+            nickname=nickname,
+            email=email,
+            bio=bio,
+            race=race_to_create,
+            guild=guild_to_create
+        )
 
 
 if __name__ == "__main__":
