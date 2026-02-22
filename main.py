@@ -4,7 +4,7 @@ import init_django_orm  # noqa: F401
 from db.models import Race, Skill, Player, Guild
 
 
-def main():
+def main() -> None: # noqa: C901
     with open("players.json", "r") as data:
         data_dict = json.load(data)
     race_array = []
