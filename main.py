@@ -5,10 +5,8 @@ from db.models import Race, Skill, Player, Guild
 
 
 def main() -> None:
-    a = {}
     with open("players.json", "r") as data:
         data_dict = json.load(data)
-        a = data_dict
     race_array = []
     skills_array = []
     guild_array = []
@@ -28,7 +26,7 @@ def main() -> None:
             description=race["description"]
         )
 
-    for players in a.values():
+    for players in data_dict.values():
         for key, value in players.items():
             if key == "guild" and value is not None:
                 guild_dict = {}
@@ -48,13 +46,13 @@ def main() -> None:
             if skills_key == "race":
                 race_name = skills_value["name"]
                 race_id = Race.objects.get(name=race_name).id
-                for k, v in skills_value.items():
-                    if k == "skills" and v is not None:
-                        for s in v:
-                            if v is not None:
+                for key, value in skills_value.items():
+                    if key == "skills" and value is not None:
+                        for skill in value:
+                            if value is not None:
                                 skills_dict = {}
-                                skills_dict["name"] = s["name"]
-                                skills_dict["bonus"] = s["bonus"]
+                                skills_dict["name"] = skill["name"]
+                                skills_dict["bonus"] = skill["bonus"]
                                 skills_dict["race_id"] = int(race_id)
                                 if skills_dict not in skills_array and skills_dict is not None:
                                     skills_array.append(skills_dict)
