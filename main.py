@@ -4,7 +4,7 @@ import init_django_orm  # noqa: F401
 from db.models import Race, Skill, Player, Guild
 
 
-def main() -> None:
+def main():
     with open("players.json", "r") as data:
         data_dict = json.load(data)
     race_array = []
@@ -56,8 +56,8 @@ def main() -> None:
                                 skills_dict["name"] = skill.get("name")
                                 skills_dict["bonus"] = skill.get("bonus")
                                 skills_dict["race_id"] = int(race_id)
-                                if (skills_dict not in skills_array and
-                                        skills_dict is not None):
+                                if (skills_dict not in skills_array
+                                        and skills_dict is not None):
                                     skills_array.append(skills_dict)
 
     for skill in skills_array:
