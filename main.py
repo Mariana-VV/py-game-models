@@ -70,7 +70,6 @@ def main() -> None:
         bio = player_value.get("bio")
         race_data = player_value.get("race")
         guild_obj = player_value.get("guild")
-
         if (race_data is not None and isinstance(race_data, dict) and isinstance(guild_obj, dict) and
                 guild_obj is not None):
             Player.objects.get_or_create(
